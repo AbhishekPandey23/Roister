@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "dev:webhook": "https://slick-terms-warn.loca.lt",
+    "dev:webhook": "ngrok http --url=wise-frog-casual.ngrok-free.app 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

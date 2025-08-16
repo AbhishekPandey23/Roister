@@ -6,7 +6,7 @@ import {
   SidebarGroupLabel,
   SidebarGroupContent,
 } from '../ui/sidebar';
-import { SideFooter } from './footer';
+import { SideFooter1 } from './footer';
 import { SideHeader } from './header';
 import { Menu } from './menu';
 export const AppSidebar = () => {
@@ -22,7 +22,7 @@ export const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SideFooter />
+      <SideFooter1 />
     </Sidebar>
   );
 };

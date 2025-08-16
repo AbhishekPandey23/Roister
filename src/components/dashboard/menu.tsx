@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '../ui/sidebar';
 import { Activity, Home, Users } from 'lucide-react'; // Assuming you are using lucide-react for icons

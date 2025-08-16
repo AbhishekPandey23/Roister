@@ -1,4 +1,5 @@
-import { ChevronUp, Settings } from 'lucide-react';
+'use client';
+import { ChevronsUpDown, LogOut, User2, UserCircle2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,29 +14,46 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '../ui/sidebar';
-import Link from 'next/link';
+import { useClerk, useUser } from '@clerk/nextjs';
 
-export const SideFooter = () => {
+export const SideFooter1 = () => {
+  const { user } = useUser();
+  const { openUserProfile, signOut } = useClerk();
   return (
     <SidebarFooter>
       <SidebarMenu>
         <SidebarMenuItem>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild className="cursor-pointer">
               <SidebarMenuButton>
-                <Settings /> Settings <ChevronUp className="ml-auto" />
+                <User2 className="w-8 h-8" />
+                <div className="ml-2">
+                  <span className="flex flex-col font-medium">
+                    {user?.fullName}
+                  </span>
+                  <div className="text-gray-500 text-xs">
+                    {user?.primaryEmailAddress?.emailAddress}
+                  </div>
+                </div>
+                <ChevronsUpDown className="ml-auto" size={16} />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Profile</DropdownMenuLabel>
+            <DropdownMenuContent align="center">
+              <DropdownMenuLabel>Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Link href={'/dashboard/profile'}>Edit Profile</Link>
+              <DropdownMenuItem
+                onClick={() => openUserProfile()}
+                className="cursor-pointer"
+              >
+                <UserCircle2 className="w-8 h-8" />
+                Profile
               </DropdownMenuItem>
-              <DropdownMenuItem>Account Settings</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
-              <DropdownMenuItem>Help</DropdownMenuItem>
-              <DropdownMenuItem>Log Out</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => signOut()}
+                className="text-red-500 focus:text-red-500 cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" /> Sign Out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>

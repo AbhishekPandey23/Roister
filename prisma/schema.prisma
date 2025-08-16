@@ -6,13 +6,78 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  first_name  String
-  last_name   String
-  clerk_user_id String @unique
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  clerk_user_id   String                    @id
+  email           String                    @unique
+  first_name      String
+  last_name       String
+  memberships     OrganizationMembership[]  // many-to-many via memberships
+  created_orgs    Organization[]             @relation("CreatedOrganizations")
+  leadNotes       LeadNote[]                 @relation("UserLeadNotes")
+  created_at      DateTime                   @default(now())
+  updated_at      DateTime                   @updatedAt
 }
+
+model Organization {
+  clerk_organization_id String                   @id
+  name                  String
+  slug                  String                   @unique
+  leads                 Leads[]
+  memberships           OrganizationMembership[] // many-to-many via memberships
+  created_by            User                     @relation("CreatedOrganizations", fields: [created_by_id], references: [clerk_user_id])
+  created_by_id         String
+  created_at            DateTime                  @default(now())
+  updated_at            DateTime                  @updatedAt
+}
+
+model OrganizationMembership {
+  id              String         @id @default(uuid())
+  user            User           @relation(fields: [user_id], references: [clerk_user_id])
+  user_id         String
+  organization    Organization   @relation(fields: [organization_id], references: [clerk_organization_id])
+  organization_id String
+  role            Role           @default(MEMBER) // OWNER, ADMIN, MEMBER
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+
+  @@unique([user_id, organization_id]) // prevents duplicates
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum LeadStatus {
+  Follow_Up
+  Bad_Fit
+  Meeting_Booked
+}
+
+model Leads {
+  id               String        @id @default(uuid())
+  email            String        @unique
+  title            String
+  phone_no         String?
+  linkedIn         String?
+  company_name     String?
+  company_website  String?
+  status           LeadStatus    @default(Follow_Up)
+  organization     Organization  @relation(fields: [organizationId], references: [clerk_organization_id])
+  organizationId   String
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+  notes            LeadNote[]    // opposite relation field for LeadNote.lead
+}
+
+model LeadNote {
+  id        String   @id @default(uuid())
+  content   String
+  lead      Leads    @relation(fields: [leadId], references: [id])
+  leadId    String
+  createdBy User     @relation("UserLeadNotes", fields: [createdById], references: [clerk_user_id])
+  createdById String
+  created_at DateTime @default(now())
+}
+
