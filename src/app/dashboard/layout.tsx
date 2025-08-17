@@ -1,21 +1,27 @@
-import { AppSidebar } from '@/components/dashboard/AppSidebar';
-import { Navbar } from '@/components/dashboard/Navbar';
+import KBar from '@/components/kbar';
+import AppSidebar from '@/components/layout/app-sidebar';
+import Header from '@/components/layout/header';
 import { Separator } from '@/components/ui/separator';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { cookies } from 'next/headers';
 
-export default function DashboardPageLayout({
+export default async function DashboardPageLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <main className="w-full">
-        <Navbar />
-        <Separator />
-        <div className="p-4">{children}</div>
-      </main>
-    </SidebarProvider>
+    <KBar>
+    <SidebarProvider defaultOpen={defaultOpen}>
+      <AppSidebar/>
+      <SidebarInset>
+      <Header/>
+      {/* page main content */}
+      {children}
+      {/* page main content end*/}
+      </SidebarInset>
+    </SidebarProvider></KBar>
   );
 }

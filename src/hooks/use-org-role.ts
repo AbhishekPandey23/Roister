@@ -56,7 +56,7 @@ export function useOrgRole(orgId: string): OrgRoleData {
     canManageOrg: role === 'ADMIN',
     canWriteNotes: ['OWNER', 'ADMIN', 'MEMBER'].includes(role || ''),
     canManageMembers: role === 'ADMIN' || role === 'OWNER',
-    isAdmin: role === 'ADMIN' || role === 'OWNER',
+    isAdmin: role === 'ADMIN'
   };
 
   return {
